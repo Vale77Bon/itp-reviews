@@ -6,22 +6,29 @@ import { Search, ArrowLeft } from 'lucide-react';
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get('q') || ''; // Obtenemos el texto de la URL
+  const query = searchParams.get('q') || '';
   const [profesores, setProfesores] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchResultados = async () => {
       setLoading(true);
+      console.log("Buscando:", query); // 🕵️‍♂️ Chismoso para ver en la consola
+
       try {
-        // --- LA MAGIA: BUSCAR POR NOMBRE O POR MATERIA ---
+        // --- AQUÍ ESTÁ LA CLAVE ---
+        // Usamos .or() para que busque en 'nombre' O en 'materia'
         const { data, error } = await supabase
           .from('profesores')
           .select('*')
-          // Esto se lee: "Donde nombre se parezca a X... O materia se parezca a X"
           .or(`nombre.ilike.%${query}%,materia.ilike.%${query}%`);
 
-        if (error) throw error;
+        if (error) {
+          console.error("Error de Supabase:", error);
+          throw error;
+        }
+
+        console.log("Resultados encontrados:", data); // 🕵️‍♂️ Ver qué encontró
         setProfesores(data);
       } catch (error) {
         console.error('Error buscando:', error.message);
@@ -33,14 +40,14 @@ const SearchResults = () => {
     if (query) {
       fetchResultados();
     } else {
-      setLoading(false); // Si no hay búsqueda, no cargamos nada
+      setLoading(false);
     }
   }, [query]);
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
       
-      {/* Encabezado de Búsqueda */}
+      {/* Encabezado */}
       <div className="mb-8">
         <Link to="/" className="text-blue-600 hover:underline flex items-center mb-4">
           <ArrowLeft size={16} className="mr-1"/> Volver al inicio
@@ -68,9 +75,12 @@ const SearchResults = () => {
             </div>
           ) : (
             <div className="text-center py-16 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-              <p className="text-xl text-gray-600 font-medium mb-2">No encontramos nada 😕</p>
-              <p className="text-gray-500">
-                Intenta buscar solo por el nombre (ej. "Juan") o solo la materia (ej. "Cálculo").
+              <div className="flex justify-center mb-4">
+                 <Search size={48} className="text-gray-300" />
+              </div>
+              <p className="text-xl text-gray-600 font-medium mb-2">No encontramos profesores 😕</p>
+              <p className="text-gray-500 max-w-md mx-auto">
+                Intenta buscar solo una palabra clave (ej. "Redes" en lugar de "Redes de computadoras") o verifica la ortografía.
               </p>
             </div>
           )}
