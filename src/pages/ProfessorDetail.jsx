@@ -2,9 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 import { Star, User, ArrowLeft, MessageSquare } from 'lucide-react';
-import { Helmet } from 'react-helmet-async'; // Importamos Helmet para el SEO
+import { Helmet } from 'react-helmet-async'; 
 import ReviewForm from '../components/ReviewForm';
-import AdBanner from '../components/AdBanner';
+import AdBanner from '../components/AdBanner'; // Importamos el banner de publicidad
 
 const ProfessorDetail = () => {
   const { id } = useParams();
@@ -12,7 +12,7 @@ const ProfessorDetail = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Función para cargar SOLO las reseñas (la usaremos para recargar al comentar)
+  // Función para cargar SOLO las reseñas (útil para recargar tras comentar)
   const fetchReviews = useCallback(async () => {
     const { data, error } = await supabase
       .from('reviews')
@@ -27,7 +27,7 @@ const ProfessorDetail = () => {
     const fetchDatos = async () => {
       try {
         setLoading(true);
-        // 1. Datos del Profesor
+        // 1. Obtener datos del Profesor
         const { data: dataProfe, error: errorProfe } = await supabase
           .from('profesores')
           .select('*')
@@ -37,7 +37,7 @@ const ProfessorDetail = () => {
         if (errorProfe) throw errorProfe;
         setProfesor(dataProfe);
 
-        // 2. Reseñas iniciales
+        // 2. Obtener reseñas
         await fetchReviews();
 
       } catch (error) {
@@ -50,6 +50,7 @@ const ProfessorDetail = () => {
     fetchDatos();
   }, [id, fetchReviews]);
 
+  // Función auxiliar para dibujar estrellas
   const renderStars = (rating) => (
     <div className="flex text-yellow-400">
       {[...Array(5)].map((_, i) => (
@@ -65,12 +66,11 @@ const ProfessorDetail = () => {
     <div className="max-w-4xl mx-auto py-8 px-4">
       
       {/* --- SEO DINÁMICO --- */}
-      {/* Esto cambia el título de la pestaña con el nombre del profesor */}
       <Helmet>
         <title>{profesor.nombre} | ITP Reviews</title>
         <meta 
           name="description" 
-          content={`Lee reseñas y opiniones anónimas sobre ${profesor.nombre} (${profesor.departamento}) del Instituto Tecnológico de Puebla.`} 
+          content={`Lee reseñas y opiniones sobre ${profesor.nombre} (${profesor.departamento}) en el ITP. Materias: ${profesor.materia}.`} 
         />
       </Helmet>
 
@@ -81,13 +81,26 @@ const ProfessorDetail = () => {
 
       {/* Tarjeta Info Profesor */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-8 flex flex-col md:flex-row gap-6 items-start">
-        <div className="h-24 w-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-3xl font-bold border-4 border-white shadow-sm">
+        
+        {/* Avatar con la inicial */}
+        <div className="h-24 w-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-3xl font-bold border-4 border-white shadow-sm flex-shrink-0">
           {profesor.nombre.charAt(0)}
         </div>
+
         <div className="flex-1">
           <h1 className="text-3xl font-bold text-gray-800">{profesor.nombre}</h1>
           <p className="text-lg text-gray-500 mb-2">{profesor.departamento}</p>
           
+          {/* --- LOGICA DE MATERIAS MÚLTIPLES --- */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {profesor.materia && profesor.materia.split(',').map((mat, index) => (
+              <span key={index} className="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold px-3 py-1 rounded-full">
+                📚 {mat.trim()}
+              </span>
+            ))}
+          </div>
+          {/* ----------------------------------- */}
+
           <div className="flex flex-wrap gap-4 mt-3">
             <div className="bg-yellow-50 px-3 py-1 rounded-lg border border-yellow-100 flex items-center gap-2">
                <span className="font-bold text-yellow-700 text-lg">{profesor.calificacion}</span>
@@ -103,15 +116,15 @@ const ProfessorDetail = () => {
       {/* FORMULARIO DE RESEÑA */}
       <ReviewForm 
         profesorId={id} 
-        onReviewAdded={fetchReviews} // Le pasamos la función para recargar la lista
+        onReviewAdded={fetchReviews} 
       />
 
-     {/* ESPACIO PUBLICIDAD (AdSense) */}
-      <div div className="mb-8">
-        <AdBanner dataAdSlot="9162019540" />
+      {/* ESPACIO PUBLICIDAD (AdSense) */}
+      <div className="mb-8">
+         <AdBanner dataAdSlot="9162019540" />
       </div>
 
-      {/* Lista de Reseñas */}
+      {/* LISTA DE RESEÑAS */}
       <div>
         <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
           <MessageSquare size={20} /> Reseñas de Alumnos ({reviews.length})
@@ -137,10 +150,17 @@ const ProfessorDetail = () => {
                     <p className="text-xs text-blue-600 font-medium mb-2 sm:hidden">Materia: {review.materia_cursada}</p>
                 )}
                 <p className="text-gray-600">{review.comentario}</p>
+                
+                <p className="text-xs text-gray-400 mt-3 text-right">
+                  {new Date(review.created_at).toLocaleDateString()}
+                </p>
               </div>
             ))
           ) : (
-            <p className="text-gray-500 italic text-center py-4">Este profesor aún no tiene comentarios. ¡Sé el primero!</p>
+            <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+              <p className="text-gray-500 italic">Este profesor aún no tiene comentarios.</p>
+              <p className="text-blue-500 text-sm font-medium mt-1">¡Sé el primero en opinar!</p>
+            </div>
           )}
         </div>
       </div>
