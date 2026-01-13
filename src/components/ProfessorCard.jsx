@@ -1,57 +1,58 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // 1. Importamos Link
-import { Star, BookOpen, MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Star, ChevronRight } from 'lucide-react';
 
-// 2. Agregamos 'id' a las propiedades que recibe el componente
-const ProfessorCard = ({ id, nombre, departamento, calificacion, materia, dificultad }) => {
+const ProfessorCard = ({ id, nombre, departamento, materia, calificacion, dificultad }) => {
   
-  const renderStars = (rating) => {
-    return [...Array(5)].map((_, i) => (
-      <Star 
-        key={i} 
-        size={16} 
-        className={i < Math.floor(rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"} 
-      />
-    ));
-  };
+  // Función para dibujar estrellitas
+  const renderStars = (rating) => (
+    <div className="flex text-yellow-400">
+      {[...Array(5)].map((_, i) => (
+        <Star key={i} size={14} fill={i < rating ? "currentColor" : "none"} className={i >= rating ? "text-gray-300" : ""} />
+      ))}
+    </div>
+  );
 
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100 flex flex-col h-full">
-      <div className="p-5 flex-grow">
-        <div className="flex justify-between items-start">
+    <Link to={`/profesor/${id}`} className="block group">
+      <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-200">
+        
+        <div className="flex justify-between items-start mb-2">
           <div>
-            <h3 className="font-bold text-lg text-gray-800 line-clamp-1">{nombre}</h3>
-            <p className="text-sm text-gray-500 font-medium">{departamento}</p>
+            <h3 className="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+              {nombre}
+            </h3>
+            <p className="text-sm text-gray-500">{departamento}</p>
           </div>
-          <div className={`text-xs px-2 py-1 rounded-full font-bold ${calificacion >= 4 ? 'bg-green-100 text-green-800' : calificacion >= 3 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-            {calificacion}/5
+          <div className="bg-blue-50 text-blue-800 font-bold text-sm px-2 py-1 rounded-lg">
+            {calificacion}
           </div>
         </div>
 
-        <div className="mt-3 flex items-center space-x-1">
-          {renderStars(calificacion)}
-          <span className="text-xs text-gray-400 ml-2">({dificultad} Dificultad)</span>
+        {/* AQUÍ ESTÁ EL CAMBIO: Convertimos el texto de materias en etiquetas */}
+        <div className="flex flex-wrap gap-1 mb-4 h-12 overflow-hidden content-start">
+           {materia.split(',').slice(0, 3).map((mat, index) => (
+             <span key={index} className="text-[10px] uppercase font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full border border-gray-200">
+               {mat.trim()}
+             </span>
+           ))}
+           {materia.split(',').length > 3 && (
+             <span className="text-[10px] text-gray-400 px-1 py-0.5">...</span>
+           )}
         </div>
-      </div>
 
-      {/* Footer de la tarjeta */}
-      <div className="px-5 pb-5 mt-auto">
-        <div className="flex items-center justify-between border-t border-gray-100 pt-3">
-          <div className="flex items-center text-gray-600 text-sm">
-            <BookOpen size={16} className="mr-2" />
-            <span className="truncate max-w-[120px]">{materia}</span>
+        <div className="flex items-center justify-between mt-2 pt-3 border-t border-gray-100">
+          <div className="flex items-center gap-1">
+             {renderStars(Math.round(calificacion))}
+             <span className="text-xs text-gray-400 ml-1">({dificultad})</span>
           </div>
-          
-          {/* 3. AQUI ESTABA EL ERROR: Ahora usamos Link apuntando al ID */}
-          <Link 
-            to={`/profesor/${id}`} 
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center hover:underline"
-          >
-            Ver reseñas <MessageCircle size={16} className="ml-1"/>
-          </Link>
+          <span className="text-blue-500 text-sm font-medium flex items-center group-hover:underline">
+            Ver reseñas <ChevronRight size={14} />
+          </span>
         </div>
+
       </div>
-    </div>
+    </Link>
   );
 };
 
