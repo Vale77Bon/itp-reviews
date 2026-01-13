@@ -2,7 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 import { Star, User, ArrowLeft, MessageSquare } from 'lucide-react';
-import ReviewForm from '../components/ReviewForm'; // <--- Importamos el formulario
+import { Helmet } from 'react-helmet-async'; // Importamos Helmet para el SEO
+import ReviewForm from '../components/ReviewForm';
 
 const ProfessorDetail = () => {
   const { id } = useParams();
@@ -61,6 +62,18 @@ const ProfessorDetail = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
+      
+      {/* --- SEO DINÁMICO --- */}
+      {/* Esto cambia el título de la pestaña con el nombre del profesor */}
+      <Helmet>
+        <title>{profesor.nombre} | ITP Reviews</title>
+        <meta 
+          name="description" 
+          content={`Lee reseñas y opiniones anónimas sobre ${profesor.nombre} (${profesor.departamento}) del Instituto Tecnológico de Puebla.`} 
+        />
+      </Helmet>
+
+      {/* Botón Volver */}
       <Link to="/" className="inline-flex items-center text-blue-600 mb-6 hover:underline">
         <ArrowLeft size={16} className="mr-1" /> Volver al inicio
       </Link>
@@ -86,7 +99,7 @@ const ProfessorDetail = () => {
         </div>
       </div>
 
-      {/* FORMULARIO DE RESEÑA (AQUI LO INSERTAMOS) */}
+      {/* FORMULARIO DE RESEÑA */}
       <ReviewForm 
         profesorId={id} 
         onReviewAdded={fetchReviews} // Le pasamos la función para recargar la lista

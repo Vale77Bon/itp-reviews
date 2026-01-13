@@ -4,6 +4,8 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import ProfessorList from './pages/ProfessorList';
 import ProfessorDetail from './pages/ProfessorDetail';
+import Admin from './pages/Admin';
+import SearchResults from './pages/SearchResults';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/buscar" element={<ProfessorList />} />
             <Route path="/profesor/:id" element={<ProfessorDetail />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/buscar" element={<SearchResults />} />
           </Routes>
         </main>
 
