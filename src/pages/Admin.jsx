@@ -23,7 +23,7 @@ const Admin = () => {
   // --- 1. LOGIN ---
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password === "puebla2024") {
+    if (password === "V@leyvero123") {
       setIsAuthenticated(true);
     } else {
       alert("Contraseña incorrecta");
