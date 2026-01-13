@@ -2,40 +2,35 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 import ProfessorCard from '../components/ProfessorCard';
-import { Search, ArrowLeft, Bug } from 'lucide-react';
+import { Search, ArrowLeft } from 'lucide-react';
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const query = (searchParams.get('q') || '').toLowerCase(); 
   const [profesores, setProfesores] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState(null); // Para ver qué trae la base de datos
 
   useEffect(() => {
     const fetchResultados = async () => {
       setLoading(true);
       try {
-        // 1. Traemos TODOS los profesores
+        // 1. Traemos TODOS los profesores (Estrategia Infalible)
         const { data, error } = await supabase.from('profesores').select('*');
         
         if (error) throw error;
 
-        // Guardamos info para diagnóstico (solo los primeros 3 para no llenar pantalla)
-        setDebugInfo(data.slice(0, 3)); 
-
-        // 2. Filtramos con Javascript (Infalible)
+        // 2. Filtramos con Javascript (Rápido y seguro)
         const resultadosFiltrados = data.filter(profe => {
-          // Convertimos todo a minúsculas para comparar
           const nombre = profe.nombre ? profe.nombre.toLowerCase() : '';
-          const materia = profe.materia ? profe.materia.toLowerCase() : ''; // Aseguramos que lea 'materia'
+          const materia = profe.materia ? profe.materia.toLowerCase() : ''; 
           
-          // ¿Coincide el nombre O la materia?
+          // Buscamos coincidencia en nombre O materia
           return nombre.includes(query) || materia.includes(query);
         });
 
         setProfesores(resultadosFiltrados);
       } catch (error) {
-        console.error('Error:', error.message);
+        console.error('Error buscando:', error.message);
       } finally {
         setLoading(false);
       }
@@ -47,11 +42,6 @@ const SearchResults = () => {
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
       
-      {/* AVISO DE VERSIÓN (Si no ves este cuadro rojo, es que tu navegador sigue en el pasado) */}
-      <div className="bg-red-100 border-2 border-red-500 text-red-700 p-2 mb-4 rounded text-center text-sm font-bold">
-         🔴 VERSIÓN DE PRUEBA V3.0 - Si ves esto, el código se actualizó.
-      </div>
-
       <div className="mb-8">
         <Link to="/" className="text-blue-600 hover:underline flex items-center mb-4">
           <ArrowLeft size={16} className="mr-1"/> Volver al inicio
@@ -64,7 +54,8 @@ const SearchResults = () => {
 
       {loading ? (
         <div className="text-center py-20">
-           <p>Cargando...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-500">Buscando coincidencias...</p>
         </div>
       ) : (
         <>
@@ -75,17 +66,14 @@ const SearchResults = () => {
               ))}
             </div>
           ) : (
-            <div className="space-y-6">
-               {/* Mensaje de no encontrado */}
-               <div className="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-                  <p className="text-xl text-gray-600 font-bold">No encontramos coincidencias para "{query}"</p>
-               </div>
-
-               {/* TABLA DE DIAGNÓSTICO: Muestra qué tiene la base de datos realmente */}
-               <div className="bg-gray-900 text-green-400 p-4 rounded-lg text-xs font-mono overflow-auto">
-                 <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2"><Bug/> DATOS REALES EN DB:</h3>
-                 <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
-               </div>
+            <div className="text-center py-16 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+              <div className="flex justify-center mb-4">
+                 <Search size={48} className="text-gray-300" />
+              </div>
+              <p className="text-xl text-gray-600 font-medium mb-2">No encontramos coincidencias 😕</p>
+              <p className="text-gray-500">
+                Prueba buscando por nombre (ej. "Juan") o por materia (ej. "Redes").
+              </p>
             </div>
           )}
         </>
