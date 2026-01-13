@@ -4,6 +4,7 @@ import { supabase } from '../services/supabaseClient';
 import { Star, User, ArrowLeft, MessageSquare } from 'lucide-react';
 import { Helmet } from 'react-helmet-async'; // Importamos Helmet para el SEO
 import ReviewForm from '../components/ReviewForm';
+import AdBanner from '../components/AdBanner';
 
 const ProfessorDetail = () => {
   const { id } = useParams();
@@ -105,9 +106,9 @@ const ProfessorDetail = () => {
         onReviewAdded={fetchReviews} // Le pasamos la función para recargar la lista
       />
 
-      {/* ESPACIO PUBLICIDAD */}
-      <div className="w-full h-24 bg-gray-50 border-dashed border-2 border-gray-200 rounded-lg flex items-center justify-center text-gray-400 mb-8 text-sm">
-        Publicidad aquí (Banner Horizontal)
+     {/* ESPACIO PUBLICIDAD (AdSense) */}
+      <div div className="mb-8">
+        <AdBanner dataAdSlot="9162019540" />
       </div>
 
       {/* Lista de Reseñas */}

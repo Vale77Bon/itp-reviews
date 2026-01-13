@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProfessorCard from '../components/ProfessorCard';
 import SchoolMap from '../components/SchoolMap';
 import { supabase } from '../services/supabaseClient';
+import AdBanner from '../components/AdBanner';
 
 const Home = () => {
   const [profesores, setProfesores] = useState([]);
@@ -51,6 +52,10 @@ const Home = () => {
         {/* Aquí se renderiza tu componente del mapa */}
         <SchoolMap />
       </section>
+
+      <div className="max-w-4xl mx-auto w-full">
+        <AdBanner dataAdSlot="9162019540" />
+      </div>
       
       {/* SECCIÓN 3: LISTA DE PROFESORES RECIENTES */}
       <section>

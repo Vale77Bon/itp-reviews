@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 const AdBanner = ({ dataAdSlot }) => {
   useEffect(() => {
     try {
-      // Esta función intenta cargar el anuncio de Google
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {
       console.error("Error cargando anuncio:", e);
@@ -11,14 +10,13 @@ const AdBanner = ({ dataAdSlot }) => {
   }, []);
 
   return (
-    <div className="my-4 flex justify-center overflow-hidden">
-      {/* Reemplaza data-ad-client con TU ID de AdSense (empieza con ca-pub-) */}
+    <div className="my-4 flex justify-center overflow-hidden border border-gray-100 rounded-lg bg-gray-50 min-h-[100px]">
       <ins className="adsbygoogle"
-           style={{ display: 'block', textAlign: 'center' }}
-           data-ad-layout="in-article"
-           data-ad-format="fluid"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" 
-           data-ad-slot={dataAdSlot || "1234567890"}></ins>
+           style={{ display: 'block', width: '100%' }}
+           data-ad-client="ca-pub-5103223521018326" 
+           data-ad-slot={dataAdSlot}
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
     </div>
   );
 };
