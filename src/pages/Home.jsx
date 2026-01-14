@@ -1,96 +1,99 @@
-import React, { useEffect, useState } from 'react';
-import ProfessorCard from '../components/ProfessorCard';
-import SchoolMap from '../components/SchoolMap';
-import { supabase } from '../services/supabaseClient';
-import AdBanner from '../components/AdBanner';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Search, Map, MessageSquare, ShieldCheck, GraduationCap, Users } from 'lucide-react';
 
 const Home = () => {
-  const [profesores, setProfesores] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Cargar profesores al iniciar la página
-  useEffect(() => {
-    const fetchProfesores = async () => {
-      try {
-        // Obtenemos los profesores (limitamos a 6 para no saturar el home)
-        const { data, error } = await supabase
-          .from('profesores')
-          .select('*')
-          .limit(6);
-        
-        if (error) throw error;
-        setProfesores(data);
-      } catch (error) {
-        console.error('Error cargando profesores:', error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfesores();
-  }, []);
-
   return (
-    <div className="py-8 max-w-6xl mx-auto px-4 space-y-16">
+    <div className="bg-gray-50 min-h-screen">
       
-      {/* SECCIÓN 1: TÍTULO Y BIENVENIDA */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-blue-900 tracking-tight">
-          Evaluación Docente <span className="text-blue-600">ITP</span>
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          La plataforma hecha por estudiantes para encontrar referencias reales de tus profesores y ubicarte en el campus.
-        </p>
-      </div>
-
-      {/* SECCIÓN 2: MAPA INTERACTIVO */}
-      <section>
-        <div className="flex items-center gap-2 mb-6 justify-center md:justify-start">
-          <div className="h-8 w-1 bg-blue-600 rounded-full"></div>
-          <h2 className="text-2xl font-bold text-gray-800">Mapa del Campus</h2>
-        </div>
-        {/* Aquí se renderiza tu componente del mapa */}
-        <SchoolMap />
-      </section>
-
-      <div className="max-w-4xl mx-auto w-full">
-        <AdBanner dataAdSlot="9162019540" />
-      </div>
-      
-      {/* SECCIÓN 3: LISTA DE PROFESORES RECIENTES */}
-      <section>
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-1 bg-orange-500 rounded-full"></div>
-            <h2 className="text-2xl font-bold text-gray-800">Profesores Destacados</h2>
-          </div>
-          {/* Enlace para ver todos si hubiera muchos */}
-          <a href="/buscar" className="text-blue-600 font-medium hover:underline text-sm">
-            Ver todos →
-          </a>
-        </div>
+      {/* --- SECCIÓN HERO (PORTADA PRINCIPAL) --- */}
+      <div className="bg-blue-900 text-white py-16 px-4 text-center rounded-b-[3rem] shadow-xl mb-12 relative overflow-hidden">
+        {/* Decoración de fondo */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         
-        {loading ? (
-          <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <div className="inline-block bg-blue-800 p-3 rounded-full mb-4 shadow-lg animate-bounce">
+            <GraduationCap size={40} className="text-yellow-400" />
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {profesores.length > 0 ? (
-              profesores.map((profe) => (
-                <ProfessorCard 
-                  key={profe.id}
-                  {...profe}
-                />
-              ))
-            ) : (
-              <p className="text-gray-500 col-span-full text-center py-10">
-                No hay profesores registrados aún.
-              </p>
-            )}
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">
+            Evaluación Docente <span className="text-yellow-400">ITP</span>
+          </h1>
+          <p className="text-xl md:text-2xl text-blue-100 mb-8 font-light">
+            La plataforma hecha por estudiantes, para estudiantes. Encuentra referencias reales y decide mejor tu horario.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/buscar" className="bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full hover:bg-yellow-400 transition transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg">
+              <Search size={20} />
+              Buscar Profesores
+            </Link>
+            <Link to="/buscar?q=sistemas" className="bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2 border border-blue-600">
+              <Users size={20} />
+              Ver Populares
+            </Link>
           </div>
-        )}
-      </section>
+        </div>
+      </div>
+
+      {/* --- SECCIÓN DE VALOR (TEXTO PARA GOOGLE) --- */}
+      <div className="max-w-6xl mx-auto px-4 mb-16">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold text-gray-800">¿Por qué usar ITP Reviews?</h2>
+          <p className="text-gray-600 mt-2">Nuestra misión es mejorar la experiencia académica en el Instituto Tecnológico de Puebla.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Tarjeta 1 */}
+          <div className="bg-white p-8 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition">
+            <div className="bg-blue-100 w-14 h-14 rounded-lg flex items-center justify-center text-blue-600 mb-4">
+              <ShieldCheck size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">100% Anónimo y Seguro</h3>
+            <p className="text-gray-600">
+              Opina con libertad. Tus reseñas ayudan a futuras generaciones a elegir mejores maestros sin comprometer tu identidad.
+            </p>
+          </div>
+
+          {/* Tarjeta 2 */}
+          <div className="bg-white p-8 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition">
+            <div className="bg-green-100 w-14 h-14 rounded-lg flex items-center justify-center text-green-600 mb-4">
+              <Map size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Mapa del Campus Actualizado</h3>
+            <p className="text-gray-600">
+              ¿No sabes dónde está tu salón? Consulta nuestro mapa interactivo con la ubicación exacta de edificios, laboratorios y áreas deportivas.
+            </p>
+          </div>
+
+          {/* Tarjeta 3 */}
+          <div className="bg-white p-8 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition">
+            <div className="bg-purple-100 w-14 h-14 rounded-lg flex items-center justify-center text-purple-600 mb-4">
+              <MessageSquare size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Comunidad Activa</h3>
+            <p className="text-gray-600">
+              Comparte tips sobre materias, dificultad de exámenes y recomendaciones para sobrevivir al semestre.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* --- SECCIÓN INFORMATIVA (PARA LLENAR CONTENIDO) --- */}
+      <div className="bg-white py-16 border-t border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Sobre este Proyecto</h2>
+          <p className="text-lg text-gray-600 leading-relaxed mb-6">
+            ITP Reviews nace de la necesidad de contar con una fuente confiable de información académica. 
+            Sabemos que elegir profesor puede definir el éxito de tu materia. Aquí centralizamos las experiencias 
+            de alumnos de Ingeniería en Sistemas, Industrial, Mecánica, Gestión Empresarial y más.
+          </p>
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-left max-w-2xl mx-auto rounded">
+            <p className="text-yellow-800 font-medium">
+              ⚠️ Nota Importante: Este es un proyecto independiente creado por estudiantes y no tiene afiliación directa oficial con la administración del Instituto Tecnológico de Puebla.
+            </p>
+          </div>
+        </div>
+      </div>
 
     </div>
   );
