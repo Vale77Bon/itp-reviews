@@ -7,6 +7,7 @@ import ProfessorList from './pages/ProfessorList'; // Opcional si no lo usas
 import ProfessorDetail from './pages/ProfessorDetail';
 import Admin from './pages/Admin';
 import SearchResults from './pages/SearchResults';
+import Terms from './pages/Terms';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <Route path="/buscar" element={<SearchResults />} />
               <Route path="/profesor/:id" element={<ProfessorDetail />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/terminos" element={<Terms />} />
             </Routes>
           </main>
 
