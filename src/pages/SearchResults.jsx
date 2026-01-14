@@ -6,26 +6,37 @@ import { Search, ArrowLeft } from 'lucide-react';
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
-  const query = (searchParams.get('q') || '').toLowerCase(); 
+  const rawQuery = searchParams.get('q') || '';
   const [profesores, setProfesores] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // --- FUNCIÓN MÁGICA: Quita acentos y pone minúsculas ---
+  const limpiarTexto = (texto) => {
+    if (!texto) return '';
+    return texto
+      .toLowerCase() // Convierte a minúsculas
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Borra los acentos
+  };
 
   useEffect(() => {
     const fetchResultados = async () => {
       setLoading(true);
       try {
-        // 1. Traemos TODOS los profesores (Estrategia Infalible)
+        // 1. Traemos TODOS los profesores
         const { data, error } = await supabase.from('profesores').select('*');
         
         if (error) throw error;
 
-        // 2. Filtramos con Javascript (Rápido y seguro)
+        // 2. Preparamos lo que escribió el usuario (sin acentos)
+        const busquedaLimpia = limpiarTexto(rawQuery);
+
+        // 3. Filtramos ignorando acentos
         const resultadosFiltrados = data.filter(profe => {
-          const nombre = profe.nombre ? profe.nombre.toLowerCase() : '';
-          const materia = profe.materia ? profe.materia.toLowerCase() : ''; 
+          const nombreLimpio = limpiarTexto(profe.nombre);
+          const materiaLimpia = limpiarTexto(profe.materia);
           
-          // Buscamos coincidencia en nombre O materia
-          return nombre.includes(query) || materia.includes(query);
+          // ¿Coincide el nombre O la materia?
+          return nombreLimpio.includes(busquedaLimpia) || materiaLimpia.includes(busquedaLimpia);
         });
 
         setProfesores(resultadosFiltrados);
@@ -37,7 +48,7 @@ const SearchResults = () => {
     };
 
     fetchResultados();
-  }, [query]);
+  }, [rawQuery]);
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
@@ -48,7 +59,7 @@ const SearchResults = () => {
         </Link>
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
           <Search className="text-blue-500" />
-          Resultados para: <span className="text-blue-900 italic">"{query}"</span>
+          Resultados para: <span className="text-blue-900 italic">"{rawQuery}"</span>
         </h1>
       </div>
 
@@ -72,7 +83,7 @@ const SearchResults = () => {
               </div>
               <p className="text-xl text-gray-600 font-medium mb-2">No encontramos coincidencias 😕</p>
               <p className="text-gray-500">
-                Prueba buscando por nombre (ej. "Juan") o por materia (ej. "Redes").
+                Prueba buscando por nombre o materia (no importan los acentos).
               </p>
             </div>
           )}
