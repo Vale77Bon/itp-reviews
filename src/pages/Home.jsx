@@ -1,14 +1,25 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShieldCheck, Map, MessageSquare, GraduationCap, Users } from 'lucide-react';
 import SchoolMap from '../components/SchoolMap';
 
 const Home = () => {
+  // --- LÓGICA DEL BUSCADOR ---
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/buscar?q=${searchTerm}`);
+    }
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       
-      {/* --- 1. PORTADA (HERO) --- */}
-      <div className="bg-blue-900 text-white py-16 px-4 text-center rounded-b-[3rem] shadow-xl mb-12 relative overflow-hidden">
+      {/* --- 1. PORTADA (HERO) CON BUSCADOR --- */}
+      <div className="bg-blue-900 text-white py-20 px-4 text-center rounded-b-[3rem] shadow-xl mb-12 relative overflow-hidden">
         {/* Fondo decorativo */}
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         
@@ -20,22 +31,32 @@ const Home = () => {
             Evaluación Docente <span className="text-yellow-400">ITP</span>
           </h1>
           <p className="text-xl text-blue-100 mb-8 font-light max-w-2xl mx-auto">
-            La herramienta definitiva para armar tu horario. Encuentra referencias reales, evita sorpresas y ubica tus salones.
+            La herramienta definitiva para armar tu horario. Encuentra referencias reales y ubica tus salones.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {/* Botón Principal: Buscar */}
-            <Link to="/buscar" className="bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full hover:bg-yellow-400 transition transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg">
-              <Search size={20} />
-              Buscar Profesores
-            </Link>
-            
-            {/* Botón Secundario: Ver Todos (Sin filtros) */}
-            <Link to="/buscar" className="bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2 border border-blue-600">
-              <Users size={20} />
-              Ver Todos
-            </Link>
+          {/* --- NUEVO BUSCADOR CENTRAL (Reemplaza a los botones) --- */}
+          <div className="max-w-xl mx-auto">
+            <form onSubmit={handleSearch} className="relative group">
+              <input
+                type="text"
+                placeholder="🔍 Escribe un profesor o materia..."
+                className="w-full py-4 pl-6 pr-14 rounded-full text-gray-800 shadow-2xl focus:outline-none focus:ring-4 focus:ring-yellow-400 text-lg transition-all transform group-hover:scale-105"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button 
+                type="submit" 
+                className="absolute right-2 top-2 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition shadow-md"
+              >
+                <Search size={24} />
+              </button>
+            </form>
+            <p className="text-blue-300 text-sm mt-3">
+              Ejemplos: "Calculo", "Juan Perez", "Taller de bases de datos"
+            </p>
           </div>
+          {/* ---------------------------------------------------- */}
+
         </div>
       </div>
 
@@ -72,7 +93,7 @@ const Home = () => {
             </div>
             <h3 className="font-bold text-gray-800 text-lg">Reseñas Reales</h3>
             <p className="text-sm text-gray-500 mt-2">
-              Olvídate de los rumores. Lee experiencias detalladas de alumnos que ya cursaron la materia.
+              Olvídate de los rumores. Lee experiencias detalladas de alumnos.
             </p>
           </div>
 
