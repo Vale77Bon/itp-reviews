@@ -24,15 +24,16 @@ const Home = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Botón Principal: Buscar */}
             <Link to="/buscar" className="bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full hover:bg-yellow-400 transition transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg">
               <Search size={20} />
               Buscar Profesores
             </Link>
             
-            {/* CORREGIDO: Ahora busca 'tics' en lugar de 'sistemas' */}
-            <Link to="/buscar?q=tics" className="bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2 border border-blue-600">
+            {/* Botón Secundario: Ver Todos (Sin filtros) */}
+            <Link to="/buscar" className="bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2 border border-blue-600">
               <Users size={20} />
-              Ver de TICs
+              Ver Todos
             </Link>
           </div>
         </div>
