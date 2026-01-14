@@ -95,7 +95,7 @@ const Home = () => {
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Misión de ITP Reviews</h2>
           <p className="text-gray-600 leading-relaxed mb-6 text-sm">
-            Esta plataforma centraliza la información académica del Instituto Tecnológico de Puebla para las carreras de Ingeniería en Sistemas, Industrial, Mecánica, Eléctrica, Electrónica, Gestión Empresarial, Logística y TICs. Nuestro objetivo es mejorar la toma de decisiones académicas mediante la transparencia.
+            Esta plataforma centraliza la información académica del Instituto Tecnológico de Puebla para las carreras de Industrial, Mecánica, Eléctrica, Electrónica, Gestión Empresarial, Logística y TICs. Nuestro objetivo es mejorar la toma de decisiones académicas mediante la transparencia.
           </p>
           
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded">
