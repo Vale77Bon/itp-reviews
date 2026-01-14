@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShieldCheck, Map, MessageSquare, GraduationCap, Users } from 'lucide-react';
-import SchoolMap from '../components/SchoolMap'; // IMPORTANTE: Traemos el mapa
+import SchoolMap from '../components/SchoolMap';
 
 const Home = () => {
   return (
@@ -9,7 +9,7 @@ const Home = () => {
       
       {/* --- 1. PORTADA (HERO) --- */}
       <div className="bg-blue-900 text-white py-16 px-4 text-center rounded-b-[3rem] shadow-xl mb-12 relative overflow-hidden">
-        {/* Fondo decorativo sutil */}
+        {/* Fondo decorativo */}
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         
         <div className="relative z-10 max-w-4xl mx-auto">
@@ -28,15 +28,17 @@ const Home = () => {
               <Search size={20} />
               Buscar Profesores
             </Link>
-            <Link to="/buscar?q=sistemas" className="bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2 border border-blue-600">
+            
+            {/* CORREGIDO: Ahora busca 'tics' en lugar de 'sistemas' */}
+            <Link to="/buscar?q=tics" className="bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2 border border-blue-600">
               <Users size={20} />
-              Ver Populares
+              Ver de TICs
             </Link>
           </div>
         </div>
       </div>
 
-      {/* --- 2. SECCIÓN DEL MAPA (¡AHORA SÍ!) --- */}
+      {/* --- 2. SECCIÓN DEL MAPA --- */}
       <div className="max-w-5xl mx-auto px-4 mb-16">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800 flex items-center justify-center gap-2">
@@ -47,14 +49,12 @@ const Home = () => {
           </p>
         </div>
         
-        {/* Aquí cargamos el componente del mapa que ya tenías */}
         <SchoolMap />
       </div>
 
-      {/* --- 3. CARACTERÍSTICAS (Resumido para no repetir) --- */}
+      {/* --- 3. CARACTERÍSTICAS --- */}
       <div className="max-w-6xl mx-auto px-4 mb-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Tarjeta 1 */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition">
             <div className="bg-blue-50 p-3 rounded-full text-blue-600 mb-4">
               <ShieldCheck size={28} />
@@ -65,7 +65,6 @@ const Home = () => {
             </p>
           </div>
 
-          {/* Tarjeta 2 */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition">
             <div className="bg-green-50 p-3 rounded-full text-green-600 mb-4">
               <MessageSquare size={28} />
@@ -76,7 +75,6 @@ const Home = () => {
             </p>
           </div>
 
-          {/* Tarjeta 3 */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition">
             <div className="bg-purple-50 p-3 rounded-full text-purple-600 mb-4">
               <Users size={28} />
@@ -89,13 +87,12 @@ const Home = () => {
         </div>
       </div>
 
-      {/* --- 4. TEXTO SEO (Oculto visualmente pero legible para Google) --- */}
-      {/* Este bloque es vital para AdSense, no lo borres, pero lo hicimos más discreto */}
+      {/* --- 4. TEXTO SEO --- */}
       <div className="bg-gray-100 py-12 border-t border-gray-200">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Misión de ITP Reviews</h2>
           <p className="text-gray-600 leading-relaxed mb-6 text-sm">
-            Esta plataforma centraliza la información académica del Instituto Tecnológico de Puebla para las carreras de Industrial, Mecánica, Eléctrica, Electrónica, Gestión Empresarial, Logística y TICs. Nuestro objetivo es mejorar la toma de decisiones académicas mediante la transparencia.
+            Esta plataforma centraliza la información académica del Instituto Tecnológico de Puebla, enfocándose en las carreras de Ingeniería en TICs, Sistemas, Industrial, Mecánica y más. Nuestro objetivo es mejorar la toma de decisiones académicas mediante la transparencia.
           </p>
           
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded">
