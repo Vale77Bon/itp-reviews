@@ -1,84 +1,110 @@
 import React, { useState } from 'react';
-import BuildingModal from './BuildingModal';
+import { Map, X, Info, Camera } from 'lucide-react';
+import { edificios } from '../data/edificios'; // Importamos los datos
 
 const SchoolMap = () => {
-  const [selectedBuilding, setSelectedBuilding] = useState(null);
-
-  // Datos "Hardcodeados" de los edificios (luego pueden venir de Supabase)
-  const buildingsData = {
-    "edificio-a": {
-      name: "Edificio de Sistemas",
-      description: "Aquí se encuentran los laboratorios de cómputo y la coordinación de Ing. en Sistemas.",
-      services: ["Laboratorio Cisco", "Sala de Servidores", "Cubículos Docentes"]
-    },
-    "edificio-b": {
-      name: "Biblioteca",
-      description: "Centro de información con acceso a internet y cubículos de estudio.",
-      services: ["Préstamo de Libros", "Sala Silenciosa", "Hemeroteca"]
-    },
-    "edificio-c": {
-      name: "Cafetería",
-      description: "Área de comida y esparcimiento para alumnos.",
-      services: ["Desayunos", "Papelería", "Microondas"]
-    }
-  };
-
-  const handleBuildingClick = (id) => {
-    if (buildingsData[id]) {
-      setSelectedBuilding(buildingsData[id]);
-    }
-  };
+  const [selectedEdificio, setSelectedEdificio] = useState(null);
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto bg-blue-50 rounded-xl overflow-hidden shadow-inner border border-blue-100 p-4">
-      <h3 className="text-center font-bold text-gray-700 mb-2">Mapa del Campus (Haz clic en un edificio)</h3>
+    <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mb-12">
       
-      {/* SVG INTERACTIVO */}
-      {/* viewBox permite que el mapa se ajuste a cualquier pantalla sin pixelarse */}
-      <svg viewBox="0 0 800 500" className="w-full h-auto drop-shadow-lg">
+      {/* Encabezado */}
+      <div className="bg-blue-900 px-6 py-4 border-b border-blue-800 flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <Map size={20}/> Mapa Interactivo
+          </h2>
+          <p className="text-blue-200 text-sm mt-1">
+            Haz clic en los números para ver fotos del edificio.
+          </p>
+        </div>
+      </div>
+      
+      {/* --- CONTENEDOR DEL MAPA (Relativo para poder poner pines encima) --- */}
+      <div className="relative bg-gray-900 overflow-hidden group">
         
-        {/* Fondo/Pasto */}
-        <rect x="0" y="0" width="800" height="500" fill="#e0f2fe" rx="15" />
-        
-        {/* Edificio A (Sistemas) - Azul */}
-        <g 
-          className="cursor-pointer hover:opacity-80 transition-opacity group"
-          onClick={() => handleBuildingClick('edificio-a')}
-        >
-          <rect x="100" y="100" width="150" height="100" fill="#3b82f6" rx="5" />
-          <text x="175" y="155" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold">Sistemas</text>
-        </g>
+        {/* IMAGEN DEL MAPA */}
+        <img 
+          src="/mapa-dark.jpeg" 
+          alt="Mapa Técnico ITP" 
+          className="w-full h-auto object-contain min-h-[400px]"
+        />
 
-        {/* Edificio B (Biblioteca) - Naranja */}
-        <g 
-          className="cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={() => handleBuildingClick('edificio-b')}
-        >
-          <rect x="350" y="80" width="200" height="120" fill="#f97316" rx="5" />
-          <text x="450" y="145" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold">Biblioteca</text>
-        </g>
+        {/* --- PINES INTERACTIVOS --- */}
+        {edificios.map((edificio) => (
+          <button
+            key={edificio.id}
+            onClick={() => setSelectedEdificio(edificio)}
+            className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 hover:bg-yellow-400 text-blue-900 text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-lg border-2 border-white transition-all hover:scale-125 z-10"
+            style={{ 
+              top: edificio.top, 
+              left: edificio.left 
+            }}
+          >
+            {edificio.id}
+          </button>
+        ))}
 
-        {/* Edificio C (Cafetería) - Verde */}
-        <g 
-          className="cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={() => handleBuildingClick('edificio-c')}
-        >
-          <circle cx="600" cy="350" r="60" fill="#22c55e" />
-          <text x="600" y="355" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold">Cafetería</text>
-        </g>
+        {/* Aviso si no hay selección */}
+        {!selectedEdificio && (
+          <div className="absolute bottom-4 left-0 right-0 text-center pointer-events-none">
+            <span className="bg-black/70 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm">
+              👆 Toca un número para ver detalles
+            </span>
+          </div>
+        )}
+      </div>
+      
+      {/* --- VENTANA MODAL (POPUP) --- */}
+      {selectedEdificio && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setSelectedEdificio(null)}>
+          <div 
+            className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()} // Evita que se cierre si clicas dentro
+          >
+            {/* Botón Cerrar */}
+            <button 
+              onClick={() => setSelectedEdificio(null)}
+              className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full z-20 transition"
+            >
+              <X size={20} />
+            </button>
 
-        {/* Caminos decorativos */}
-        <path d="M 175 200 L 175 350 L 600 350" stroke="#cbd5e1" strokeWidth="20" fill="none" strokeDasharray="10,5"/>
-        <path d="M 450 200 L 450 350" stroke="#cbd5e1" strokeWidth="20" fill="none" strokeDasharray="10,5"/>
+            {/* Imagen del Edificio */}
+            <div className="h-48 bg-gray-200 relative">
+              <img 
+                src={selectedEdificio.imagen} 
+                alt={selectedEdificio.nombre}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4">
+                <h3 className="text-white font-bold text-xl">{selectedEdificio.nombre}</h3>
+              </div>
+            </div>
 
-      </svg>
+            {/* Información */}
+            <div className="p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <Info className="text-blue-600 shrink-0 mt-1" size={20} />
+                <p className="text-gray-600 leading-relaxed">
+                  {selectedEdificio.descripcion}
+                </p>
+              </div>
 
-      {/* El Modal que se abre sobre el mapa */}
-      <BuildingModal 
-        isOpen={!!selectedBuilding} 
-        onClose={() => setSelectedBuilding(null)} 
-        data={selectedBuilding}
-      />
+              {/* Botón de acción (ej. ver materias) */}
+              <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end">
+                <button 
+                  onClick={() => setSelectedEdificio(null)}
+                  className="bg-blue-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-800 transition text-sm"
+                >
+                  Entendido
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
