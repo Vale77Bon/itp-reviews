@@ -30,12 +30,23 @@ const SchoolMap = () => {
           className="w-full h-auto object-contain min-h-[400px]"
         />
 
-        {/* --- PINES INTERACTIVOS --- */}
+        {/* --- PINES INTERACTIVOS (Ajustados para celular) --- */}
         {edificios.map((edificio) => (
           <button
             key={edificio.id}
             onClick={() => setSelectedEdificio(edificio)}
-            className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 hover:bg-yellow-400 text-blue-900 text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-lg border-2 border-white transition-all hover:scale-125 z-10"
+            className="absolute transform -translate-x-1/2 -translate-y-1/2 
+                       bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold 
+                       rounded-full flex items-center justify-center shadow-sm 
+                       transition-all hover:scale-125 z-10
+                       
+                       /* --- CAMBIOS DE TAMAÑO --- */
+                       border border-white           /* Borde delgado en celular */
+                       w-5 h-5 text-[9px]            /* Tamaño pequeño en celular (20px) */
+                       
+                       md:border-2                   /* Borde grueso en PC */
+                       md:w-7 md:h-7 md:text-xs      /* Tamaño normal en PC (28px) */
+                       "
             style={{ 
               top: edificio.top, 
               left: edificio.left 
